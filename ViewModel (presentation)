@@ -1,0 +1,31 @@
+// presentation/viewmodel/MainViewModel.kt
+class MainViewModel(
+    private val getBinInfoUseCase: GetBinInfoUseCase,
+    private val getHistoryUseCase: GetHistoryUseCase
+) : ViewModel() {
+    var binInput by mutableStateOf("")
+    var binInfo by mutableStateOf<BinInfo?>(null)
+    var isLoading by mutableStateOf(false)
+    var error by mutableStateOf<String?>(null)
+
+    fun fetchBinInfo() {
+        viewModelScope.launch {
+            isLoading = true
+            error = null
+            try {
+                binInfo = getBinInfoUseCase(binInput)
+            } catch (e: Exception) {
+                error = e.message ?: "Unknown error"
+            } finally {
+                isLoading = false
+            }
+        }
+    }
+}
+
+// presentation/viewmodel/HistoryViewModel.kt
+class HistoryViewModel(
+    private val getHistoryUseCase: GetHistoryUseCase
+) : ViewModel() {
+    val history = getHistoryUseCase().collectAsState(initial = emptyList())
+}
