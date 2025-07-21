@@ -1,0 +1,13 @@
+// di/module.kt
+val appModule = module {
+    single { BinApi.instance }
+    single<AppDatabase> {
+        Room.databaseBuilder(
+            androidApplication(),
+            AppDatabase::class.java, "app-db"
+        ).build()
+    }
+    single<BinRepository> { BinRepositoryImpl(get(), get<AppDatabase>().binHistoryDao()) }
+    factory { GetBinInfoUseCase(get()) }
+    factory { GetHistoryUseCase(get()) }
+}
