@@ -1,0 +1,14 @@
+app/
+├── data/
+│   ├── local/       # Room Database
+│   ├── remote/      # Retrofit
+│   ├── repository/  # Репозитории
+├── domain/
+│   ├── model/       # Модели данных
+│   ├── repository/  # Интерфейсы репозиториев
+│   └── use_case/    # Use Cases
+└── presentation/
+    ├── screen/      # Экран
+    ├── component/   # Компоненты UI
+    ├── viewmodel/   # ViewModel
+    └── navigation/  # Навигация
