@@ -1,0 +1,17 @@
+// data/repository/BinRepositoryImpl.kt
+class BinRepositoryImpl(
+    private val api: BinApiService,
+    private val dao: BinHistoryDao
+) : BinRepository {
+    override suspend fun getBinInfo(bin: String): BinInfo {
+        return api.getBinInfo(bin).toDomainModel()
+    }
+
+    override fun getHistory(): Flow<List<BinInfo>> {
+        return dao.getAll().map { list -> list.map { it.toDomainModel() } }
+    }
+
+    override suspend fun saveToHistory(info: BinInfo) {
+        dao.insert(info.toEntity())
+    }
+}
