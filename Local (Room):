@@ -1,0 +1,32 @@
+// data/local/BinInfoEntity.kt
+@Entity(tableName = "bin_history")
+data class BinInfoEntity(
+    @PrimaryKey val bin: String,
+    val scheme: String?,
+    val type: String?,
+    val brand: String?,
+    val countryName: String?,
+    val countryLat: Double?,
+    val countryLng: Double?,
+    val bankName: String?,
+    val bankUrl: String?,
+    val bankPhone: String?,
+    val bankCity: String?,
+    val timestamp: Long = System.currentTimeMillis()
+)
+
+// data/local/BinHistoryDao.kt
+@Dao
+interface BinHistoryDao {
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insert(item: BinInfoEntity)
+
+    @Query("SELECT * FROM bin_history ORDER BY timestamp DESC")
+    fun getAll(): Flow<List<BinInfoEntity>>
+}
+
+// data/local/AppDatabase.kt
+@Database(entities = [BinInfoEntity::class], version = 1)
+abstract class AppDatabase : RoomDatabase() {
+    abstract fun binHistoryDao(): BinHistoryDao
+}
