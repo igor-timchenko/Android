@@ -1,0 +1,68 @@
+// presentation/screen/MainScreen.kt
+@Composable
+fun MainScreen(
+    viewModel: MainViewModel = koinViewModel(),
+    navController: NavController
+) {
+    Column {
+        TextField(
+            value = viewModel.binInput,
+            onValueChange = { viewModel.binInput = it },
+            label = { Text("Enter BIN") }
+        )
+        
+        Button(onClick = viewModel::fetchBinInfo) {
+            Text("Search")
+        }
+        
+        viewModel.binInfo?.let { info ->
+            BinInfoCard(info = info)
+        }
+        
+        Button(onClick = { navController.navigate("history") }) {
+            Text("View History")
+        }
+    }
+}
+
+// presentation/component/BinInfoCard.kt
+@Composable
+fun BinInfoCard(info: BinInfo) {
+    val context = LocalContext.current
+    
+    Card {
+        Column {
+            Text("Scheme: ${info.scheme}")
+            Text("Type: ${info.type}")
+            Text("Brand: ${info.brand}")
+            
+            info.country?.let { country ->
+                Text("Country: ${country.name}")
+                Text(
+                    "Coordinates: ${country.latitude}, ${country.longitude}",
+                    modifier = Modifier.clickable {
+                        val uri = "geo:${country.latitude},${country.longitude}"
+                        context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(uri)))
+                    }
+                )
+            }
+            
+            info.bank?.let { bank ->
+                Text("Bank: ${bank.name}")
+                Text("City: ${bank.city}")
+                Text(
+                    "URL: ${bank.url}",
+                    modifier = Modifier.clickable {
+                        context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(bank.url)))
+                    }
+                )
+                Text(
+                    "Phone: ${bank.phone}",
+                    modifier = Modifier.clickable {
+                        context.startActivity(Intent(Intent.ACTION_DIAL, Uri.parse("tel:${bank.phone}")))
+                    }
+                )
+            }
+        }
+    }
+}
