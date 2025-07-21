@@ -1,0 +1,16 @@
+// data/remote/BinApiService.kt
+interface BinApiService {
+    @GET("{bin}")
+    suspend fun getBinInfo(@Path("bin") bin: String): BinInfoResponse
+}
+
+// data/remote/BinApi.kt
+object BinApi {
+    val instance: BinApiService by lazy {
+        Retrofit.Builder()
+            .baseUrl("https://binlist.net/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(BinApiService::class.java)
+    }
+}
