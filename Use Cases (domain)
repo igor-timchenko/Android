@@ -1,0 +1,13 @@
+// domain/use_case/GetBinInfoUseCase.kt
+class GetBinInfoUseCase(private val repository: BinRepository) {
+    suspend operator fun invoke(bin: String): BinInfo {
+        val info = repository.getBinInfo(bin)
+        repository.saveToHistory(info)
+        return info
+    }
+}
+
+// domain/use_case/GetHistoryUseCase.kt
+class GetHistoryUseCase(private val repository: BinRepository) {
+    operator fun invoke(): Flow<List<BinInfo>> = repository.getHistory()
+}
